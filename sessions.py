@@ -31,7 +31,7 @@ def get_one_item(user):
     parameters = ['first_name', 'last_name' , 'country', 'city', 'bdate', 'sex']
 
 
-access_token = '665c80434de0aa5cca1621f670f54264d984a5b2a9f0706b46cd4b20358964946912495f05f2ae2464306'
+access_token = ''
 u_id = '38870323'
 url = get_url(u_id, access_token, count=0, offset=1)
 
