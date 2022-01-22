@@ -2,7 +2,7 @@ import urllib.parse
 
 
 def value_checker(user_id, token, api_version, count, offset):
-    """Проверка значений для сборки url
+    """Проверка значений для сборки url.
 
     :param user_id: id пользователя по которому будет производится сбор списка друзей;
     :param token: access token приложения с которого будет выполняться запрос;
@@ -39,6 +39,7 @@ def get_url(user_id, token, api_version='5.131', count=0, offset=0):
     :param api_version: версия VK api (по умолчанию 5.131);
     :param count: количество пользователей о которых нужно получить информацию;
     :param offset: смещение для получения подмножества списка друзей.
+    :return: готовая ссылка для подключения к api vk.
     """
     value_checker(user_id, token, api_version, count, offset)
 
@@ -60,7 +61,7 @@ def get_url(user_id, token, api_version='5.131', count=0, offset=0):
 
 if __name__ == '__main__':
     access_token = ''
-    u_id = '38870323'
+    u_id = '47124810'
 
-    url = get_url(u_id, access_token, offset=10)
+    url = get_url(u_id, access_token, count=100, offset=0)
     print(url)
