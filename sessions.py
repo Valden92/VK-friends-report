@@ -54,7 +54,7 @@ def date_to_iso(date):
     return date_obj.strftime("%Y-%m-%d")
 
 
-def get_one_item(user):
+def get_one_item(user, parameters):
     """Собирает словарь по параметрам для одного извелченного пользователя.
 
     :param user: исходный словарь, извлеченный из api vk.
