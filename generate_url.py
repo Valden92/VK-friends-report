@@ -20,7 +20,7 @@ def value_checker(user_id, token, api_version, count, offset):
         errors += "Число пользователей и смещение должны быть целыми положительными числами.\n"
 
     if token.isdigit():
-        errors += "Токен не может быть числом.\n"
+        errors += "Неверный токен.\n"
 
     try:
         float(api_version)
