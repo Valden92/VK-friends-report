@@ -3,7 +3,7 @@ from work_with_api import VkApiGet
 from work_with_items import ItemConstructor
 from generate_report import FileSaver
 
-#     access_token = '665c80434de0aa5cca1621f670f54264d984a5b2a9f0706b46cd4b20358964946912495f05f2ae2464306'
+#     access_token = ''
 #     user_id = '38870323'
 #     file_format = 'csv'
 #     param = ['first_name', 'last_name', 'country', 'city', 'bdate', 'sex']
