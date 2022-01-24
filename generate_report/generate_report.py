@@ -38,6 +38,8 @@ class FileSaver:
         # Проверка, является ли указанная директория исходной (для программы).
         if self.path_to_save == os.getcwd():
             self.path_to_save = os.path.join(self.path_to_save, 'REPORTS')
+            if not os.path.isdir(self.path_to_save):
+                os.mkdir(self.path_to_save)
             print('Отчет будет сохранен тут: ', self.path_to_save)
             self.success_mkdir = True
         else:
