@@ -11,11 +11,18 @@ class ItemConstructor:
         :param parameters: параметры для получения готовой структуры словаря для одного юзера.
         """
         self.parameters = parameters
+        self.female = 1
+        self.male = 2
 
     def get_items(self, items):
-        """Получение списка подписчиков."""
+        """Получение списка подписчиков.
+
+        :param items: массив, содержащий dicts с данными о пользователях, полученными из VK api.
+        :return: форматированный список, содержащий dicts с данными о пользователях, согласно переданными параметрам.
+        """
         format_items = []
         for user in items:
+            # Фильтрация деактивированных пользователей с отсутствием каких-либо полезных данных.
             if 'deactivated' in user.keys() and user['first_name'] == 'DELETED':
                 pass
             else:
@@ -26,19 +33,21 @@ class ItemConstructor:
         """Полчение реформатированного словаря по переданным параметрам для одного юзера.
 
         :param user: исходный dict, извлеченный из api vk.
+        :return: dict, содержащий данные об одном пользователе в соответствии с переданными параметрами.
         """
         one_user = {}
 
         for param in self.parameters:
+            # Некоторых данных может не быть, для этого используется try-except.
             try:
                 if param == 'city' or param == 'country':
                     one_user[param] = user[param]['title']
                 elif param == 'bdate':
                     one_user[param] = self.__date_to_iso(user[param])
                 elif param == 'sex':
-                    if user[param] == 1:
+                    if user[param] == self.female:
                         one_user[param] = 'Женский'
-                    elif user[param] == 2:
+                    elif user[param] == self.male:
                         one_user[param] = 'Мужской'
                 else:
                     one_user[param] = user[param]
@@ -54,6 +63,8 @@ class ItemConstructor:
         :param date: дата в формате 'DD.MM.YYYY' или 'DD.MM'.
         :return: дата в формате ISO 'YYYY-MM-DD' или 'MM-DD'.
         """
+        # Некоторые пользователи скрывают свой год рождения или не заполняют его.
+        # В таком случае остается только месяц и день.
         try:
             date_obj = datetime.strptime(date, '%d.%m.%Y')
         except ValueError:
