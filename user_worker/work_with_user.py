@@ -34,7 +34,9 @@ def run_program():
         if total_user > 0:
             print('Для ID: {} обнаружено {} пользователей.\n'.format(user_id, total_user))
         else:
-            no_users(user_id)
+            key = no_users(user_id)
+            if key == 'y':
+                continue
 
         # Запрашивает у пользователя формат отчета.
         file_format = input_format()
@@ -92,7 +94,7 @@ def no_users(user_id):
         key = input("Желаете начать заново (Y) или прекратить выполнение программы (Q): ").strip().lower()
         if_q_exit(key)
         if key == 'y':
-            break
+            return 'y'
         else:
             print('Введенное значение не распознано. Попробуйте еще раз.')
             continue
