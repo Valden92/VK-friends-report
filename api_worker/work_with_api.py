@@ -6,9 +6,8 @@ class VkApiGet:
 
     def __init__(self, user_id, access_token, parameters):
         """Инициализация параметров.
-
-        :param user_id: ID пользователя, по которому делается запрос с целью извлечения его подписчиков.
-        :param access_token: ваш токен (токен приложения) с которого выполняется запрос к VK api.
+        :param user_id: ID пользователя, по которому делается запрос с целью извлечения его подписчиков;
+        :param access_token: ваш токен (токен приложения) с которого выполняется запрос к VK api;
         :param parameters: параметры для передачи их в поле fields VK api, формирующие конечным список данных
         об одном пользователе.
         """
@@ -45,7 +44,6 @@ class VkApiGet:
 
     def __check_values(self):
         """Проверка передаваемых значений.
-
         :except ValueError: выбрасывает исключение при несоответствии данных определенному виду или типу.
         """
         # Сообщение, передаваемое в исключение.
@@ -55,8 +53,8 @@ class VkApiGet:
             errors += "Передаваемый user_id должен содержать только числовые значения.\n"
 
         # Токен - комбинация буквенных и цифровых символов.
-        if self.token.isdigit() or not self.token.isalnum() or self.token.isalpha():
-            errors += "Неверный токен.\n"
+        if self.token.isdigit() or not self.token.isalnum() or self.token.isalpha() or not self.token.isascii():
+            errors += "Токен содержит недопустимые символы. Он должен состоять из комбинации символов ASCII и цифр.\n"
 
         try:
             float(self.api_version)
@@ -68,7 +66,6 @@ class VkApiGet:
 
     def __check_access(self):
         """Проверка статуса соединения и наличия ошибок при получении ответа на запрос.
-
         :except ConnectionError: выбрасывает исключение, если отсутствует соединение или данные получены с ошибками.
         """
         try:
@@ -98,7 +95,6 @@ class VkApiGet:
 
     def __total_user(self):
         """Получает по закпросу к api общее количество друзей пользователя.
-
         :return: общее количество друзей для запрошенного id.
         :except ConnectionError: выбрасывает исключение, если проверка на соединение c VK api прошла неудачно.
         """
@@ -113,7 +109,6 @@ class VkApiGet:
 
     def get_data(self, count=0, offset=0):
         """Получает список пользователей с параметрами в виде dict.
-
         :param count: количество пользователей, которое требуется получить в одном запросе;
         :param offset: смещение внутри массива пользователей.
         :except ConnectionError: выбрасывает исключение, если проверка на соединение c VK api прошла неудачно.
