@@ -9,9 +9,8 @@ class FileSaver:
 
     def __init__(self, path, parameters, file_format, users_per_page=500):
         """Инициализация атрибутов.
-
         :param path: путь для сохранения отчета;
-        :param parameters: параметры, требуемые для генерации headers в CSV и TSV форматах;
+        :param parameters: параметры, требуемые для генерации headers в CSV и TSV форматах и парсинга данных;
         :param file_format: формат сохранения данных (csv, tsv, json);
         :param users_per_page: ограничение количества пользователей в одном запросе (по умолчанию 500).
         """
@@ -54,16 +53,18 @@ class FileSaver:
                 except FileNotFoundError:
                     self.success_mkdir = False
                     raise FileNotFoundError('Системе не удается найти указанный путь.')
+                except OSError:
+                    self.success_mkdir = False
+                    raise OSError('Синатксическая ошибка в имени файла или папке.')
                 else:
+                    self.path_to_save = os.path.abspath(self.path_to_save)
                     print('Новый путь к файлу успешно сформирован.\n'
                           'Отчет будет сохранен тут: ', self.path_to_save)
                     self.success_mkdir = True
             else:
+                self.path_to_save = os.path.abspath(self.path_to_save)
                 print('Отчет будет сохранен тут: ', self.path_to_save)
                 self.success_mkdir = True
-
-    def __make_dir_report(self):
-        self.path_to_save.split('')
 
     def __filename_join(self):
         """Подготавливает конечный путь к файлу для работы с ним."""
@@ -79,7 +80,6 @@ class FileSaver:
     @staticmethod
     def __save_in_json(file, data, in_while, page=1):
         """Сохраняет отчет в json.
-
         :param file: открытый файл для сохранения;
         :param data: данные для сохранения;
         :param in_while: переменная типа bool для обозначения запущено ли сохранение в цикле;
@@ -95,7 +95,6 @@ class FileSaver:
     @staticmethod
     def __save_in_csv_or_tsv(writer, data, in_while, page=1):
         """Сохраняет отчет в csv или tsv
-
         :param writer: экзмепляр DictWriter;
         :param data: данные для сохранения;
         :param in_while: переменная типа bool для обозначения запущено ли сохранение в цикле;
@@ -108,7 +107,6 @@ class FileSaver:
 
     def __file_saver(self, file, item_construct, get_from_api, page=0, in_while=False, offset=0):
         """Извлекает подмассив пользователей и отправляет их сохраняться в нужном формате.
-
         :param file: открытый файл для сохранения;
         :param item_construct: экземпляр класса ItemConstructor для предобработки переданного массива данных;
         :param get_from_api: экземпляр класса VkApiGet для получения подмассива данных из VK api;
@@ -131,18 +129,16 @@ class FileSaver:
 
     def run(self, total_user, get_from_api):
         """Запуск получения и сохранения данных в файл.
-
         :param total_user: общее количество пользователей у переданного ID.
         :param get_from_api: экземпляр класса VkApiGet для получения подмассива данных из VK api.
         :except EmptyValueError: выбрасывается в случае, когда известно, что по переданному ID отсутствуют подписчики.
         """
         users_count = total_user
         if users_count == 0:
-            print('У переданного ID друзей не найдено.')
             raise EmptyValueError
 
-        item_construct = ItemConstructor(parameters=self.fields)
         with open(self.complete_path, 'w', encoding='utf-8') as file:
+            item_construct = ItemConstructor(parameters=self.fields)
             if users_count > self.users_per_page:
                 offset = 0
                 page = 1
@@ -152,9 +148,10 @@ class FileSaver:
                 # Иначе формат записи внутри файла будет неверный.
                 if self.file_format == 'json':
                     file.write('[')
+                print('Записано пользователей:')
                 while users_count > 0:
                     self.__file_saver(file, item_construct, get_from_api, page=page, in_while=in_while, offset=offset)
-
+                    print('\t- ', item_construct.users_counter)
                     page += 1
                     users_count -= self.users_per_page
                     offset += self.users_per_page
@@ -169,6 +166,9 @@ class FileSaver:
                     file.write(']')
             else:
                 self.__file_saver(file, item_construct, get_from_api)
+                print('Записано пользователей: ', item_construct.users_counter)
+
+            print('Деактивированных пользователей (не записанных): ', item_construct.deactivate_users)
 
 
 class EmptyValueError(Exception):
